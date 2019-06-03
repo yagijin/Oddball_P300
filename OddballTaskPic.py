@@ -20,13 +20,13 @@ from PyQt5.QtCore import Qt, QTimer, QRectF, pyqtSignal
 ####################################################################
 frameRate = 10                      #タイマーのフレームレート(表示間隔)
 printsec = 1                        #1刺激の表示時間
-sumOfStimulation = 10               #刺激の総数
+sumOfStimulus = 10                  #刺激の総数
 ratioOfTarget = 0.2                 #刺激の総数に占めるターゲットの割合
 targetPic = "stimulus/blue.png"     #ターゲット刺激のファイル名
 standardPic = "stimulus/red.png"    #スタンダード刺激のファイル名
 ####################################################################
 
-class Stimulation:
+class Stimulus:
     def __init__(self,stimulusOrder):
         self.on = 0                 #LSLに出力する提示刺激の状態
         self.stimulusOrder = stimulusOrder
@@ -40,7 +40,6 @@ class Stimulation:
         painter = QPainter(window)
 
         if (self.on == 1) or (self.on == 2):
-            
             if self.stimulusOrder[self.counterStimulus] == 0: 
                 pic = QPixmap(targetPic)                    #画像の読み込み
                 painter.drawPixmap(75,75,pic)               #画像の描画　（int,int, ->：画像の表示開始地点
@@ -68,8 +67,8 @@ class MainWindow(QWidget):
         super().__init__()
         print("###  [Space] to Start and Pause/Unpause  ###")
         self.base_time = pc()
-        self.OrderStimulations()
-        self.initStimulations()
+        self.OrderStimulus()
+        self.initStimulus()
         self.initUI()
         self.show()
         info = StreamInfo('Oddballstimulus', 'stimulation', 1, 100, 'float32', 'oddballstimu20190531')
@@ -82,27 +81,26 @@ class MainWindow(QWidget):
         self.timer.timeout.connect(self.update)             #updateでpaintEventメソッドを更新
 
     #割合が決まった刺激をランダムに並び替えたリストを作るメソッド
-    def OrderStimulations(self):         
+    def OrderStimulus(self):         
         self.stimulusOrder = list()                         #作成するリスト
-        self.counterStimulus = 0                            #刺激の表示回数カウンタ
 
-        sumOfTarget =  int(sumOfStimulation*ratioOfTarget)
+        sumOfTarget =  int(sumOfStimulus*ratioOfTarget)
 
         for i in range(sumOfTarget):
             self.stimulusOrder.append(0)
-        for i in range(sumOfStimulation-sumOfTarget):
+        for i in range(sumOfStimulus-sumOfTarget):
             self.stimulusOrder.append(1)
 
         random.shuffle(self.stimulusOrder)                  #要素をシャッフル
 
     # 刺激を定義するメソッド
-    def initStimulations(self):
-        self.stim = Stimulation(self.stimulusOrder)
+    def initStimulus(self):
+        self.stim = Stimulus(self.stimulusOrder)
 
     #キーが押される度に実行されるメソッド
     def keyPressEvent(self, e):                            
         if e.key() == Qt.Key_Space:
-            if (self.stim.counterStimulus >= sumOfStimulation):#終了するときのキー操作
+            if (self.stim.counterStimulus >= sumOfStimulus):#終了するときのキー操作
                 self.timer.start()
                 sys.exit()
             elif self.timer.isActive():                     #実行途中で止めるときのキー操作
@@ -114,7 +112,7 @@ class MainWindow(QWidget):
     #updateされるたびに実行されるメソッド
     def paintEvent(self, QPaintEvent):      
         curr_time = pc()
-        if (self.stim.counterStimulus >= sumOfStimulation): #stim.~でclass Stimulation側（１つのインスタンス）の値を持ってこれる
+        if (self.stim.counterStimulus >= sumOfStimulus): #stim.~でclass Stimulus側（１つのインスタンス）の値を持ってこれる
             print("###  [Space] to Exit from This App  ###")
             self.timer.stop()
         else:

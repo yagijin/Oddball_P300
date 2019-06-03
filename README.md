@@ -12,7 +12,7 @@ LSLには，ターゲット刺激:[2]，スタンダード刺激:[1]，なにも
 --- | ---
 frameRate | タイマーのフレームレート(表示間隔)
 printsec | 1刺激の表示時間
-sumOfStimulation | 刺激の総数
+sumOfStimulus | 刺激の総数
 ratioOfTarget | 刺激の総数に占めるターゲットの割合
 targetPic | ターゲット刺激のファイル名
 standardPic | スタンダード刺激のファイル名
