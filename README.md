@@ -1,7 +1,7 @@
 # Oddball_P300
 オドボール課題でP300を取得するためのプログラム（Programs to obtain P300 with Oddball Task）
 
-# OddballTask.py  
+# OddballTaskPic.py  & OddballTaskSound.py
 P300を誘発するためのオドボール課題実行用のプログラム，指定した間隔での刺激の提示と時間同期のためにLSLへの出力ができる.  
 スペースを押すと実験開始，もう一度押すと途中で止められる，刺激の提示後もう一度押すと終了.  
 LSLには，ターゲット刺激:[2]，スタンダード刺激:[1]，なにもない時:[0]を出力する.  
@@ -14,6 +14,6 @@ frameRate | タイマーのフレームレート(表示間隔)
 printsec | 1刺激の表示時間
 sumOfStimulus | 刺激の総数
 ratioOfTarget | 刺激の総数に占めるターゲットの割合
-targetPic | ターゲット刺激のファイル名
-standardPic | スタンダード刺激のファイル名
+targetPic or targetSound | ターゲット刺激のファイル名
+standardPic or standardSound| スタンダード刺激のファイル名
 

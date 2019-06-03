@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#OddballTaskPic.py
+#OddballTaskSound.py
 #by J.Yagi 2019/06/03 
 #P300を誘発するためのオドホール課題実行用のプログラム，指定した間隔での刺激の提示と時間同期のためにLSLへの出力ができる
 #スペースを押すと実験開始，スペースを押すと途中で止められる，刺激の提示後スペースで終了
@@ -8,6 +8,8 @@
 
 import sys
 import random
+#import winsound as ws
+import pygame                                                               #サウンド用
 from time import perf_counter as pc                                         #高精度のタイマ
 from pylsl import StreamInfo, StreamOutlet                                  #Python用のLSLライブラリ
 
@@ -18,19 +20,21 @@ from PyQt5.QtCore import Qt, QTimer, QRectF, pyqtSignal
 ####################################################################
 ##この部分の値を適宜変更して使ってください．
 ####################################################################
-frameRate = 10                      #タイマーのフレームレート(表示間隔)
-printsec = 1                        #1刺激の表示時間
-sumOfStimulus = 10                  #刺激の総数
-ratioOfTarget = 0.2                 #刺激の総数に占めるターゲットの割合
-targetPic = "stimulus/blue.png"     #ターゲット刺激のファイル名
-standardPic = "stimulus/red.png"    #スタンダード刺激のファイル名
+frameRate = 10                          #タイマーのフレームレート(表示間隔)
+printsec = 2                            #1刺激の表示時間
+sumOfStimulus = 10                      #刺激の総数
+ratioOfTarget = 0.2                     #刺激の総数に占めるターゲットの割合
+targetSound = "stimulus/sound1.mp3"     #ターゲット刺激のファイル名
+standardSound = "stimulus/sound2.mp3"   #スタンダード刺激のファイル名
 ####################################################################
+
 
 class Stimulus:
     def __init__(self,stimulusOrder):
         self.on = 0                 #LSLに出力する提示刺激の状態
         self.stimulusOrder = stimulusOrder
         self.counterStimulus = 0
+        self.counterSound = -1
         self.next_time = pc() + printsec
 
     def resetTimer(self):
@@ -38,15 +42,19 @@ class Stimulus:
 
     def draw(self, ctime):
         painter = QPainter(window)
-
-        if (self.on == 1) or (self.on == 2):
+        pygame.mixer.init()
+        if (((self.on == 1) or (self.on == 2)) and (self.counterSound != self.counterStimulus)):
             if self.stimulusOrder[self.counterStimulus] == 0: 
-                pic = QPixmap(targetPic)                    #画像の読み込み
-                painter.drawPixmap(75,75,pic)               #画像の描画　（int,int, ->：画像の表示開始地点
-
+                #ws.PlaySound( 'SystemHand', ws.SND_ALIAS )
+                music = pygame.mixer.music
+                music.load(targetSound)
+                music.play(1)
             elif self.stimulusOrder[self.counterStimulus] == 1:
-                pic = QPixmap(standardPic)
-                painter.drawPixmap(75,75,pic)
+                #ws.PlaySound( 'SystemExit', ws.SND_ALIAS )
+                music = pygame.mixer.music
+                music.load(standardSound)
+                music.play(1)
+            self.counterSound = self.counterSound + 1
 
         if ctime >= self.next_time:                         #刺激を一定時間ごとに切り替えるための処理
             self.next_time += printsec
